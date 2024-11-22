@@ -1,4 +1,4 @@
-# social_media
+# social_messaging
 
 A social messaging app made with flutter and firebase.
 
