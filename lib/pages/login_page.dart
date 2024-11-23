@@ -17,9 +17,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-   //controller
   TextEditingController emailController = TextEditingController();
-
   TextEditingController passController = TextEditingController();
 
   void login() async{

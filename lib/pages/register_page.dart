@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:social_media/components/my_textfield.dart';
 import 'package:social_media/components/my_button.dart';
 import 'package:social_media/helper/helper_functions.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 class RegisterPage extends StatefulWidget {
   final void Function()? onTap;
@@ -41,11 +43,26 @@ class _RegisterPageState extends State<RegisterPage> {
 
     try{
       UserCredential? userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: emailController.text, password: passController.text);
-      Navigator.pop(context);
+      
+      createUserDocument(userCredential);
+      
+      if (context.mounted) Navigator.pop(context);
     } on FirebaseAuthException catch (e){
       Navigator.pop(context);
       displayMessageToUser(e.code, context);
     } 
+  }
+
+  Future<void> createUserDocument(UserCredential? userCredential) async{
+    if(userCredential != null && userCredential.user != null){
+      await FirebaseFirestore.instance
+        .collection("Users")
+        .doc(userCredential.user!.email)
+        .set({
+          'email': userCredential.user!.email,
+          'username': userController.text,
+        });
+    }
   }
 
   @override
@@ -65,12 +82,12 @@ class _RegisterPageState extends State<RegisterPage> {
                 size: 80,
                 color: Theme.of(context).colorScheme.inversePrimary,
               ),
-              const SizedBox(height: 25),
+              const SizedBox(height: 15),
               const Text(  
                 'S O C I A L',
                 style: TextStyle(fontSize: 20),
               ),
-              const SizedBox(height: 50),
+              const SizedBox(height: 15),
               //username
               MyTextField(
                 hintText: "Username", 
